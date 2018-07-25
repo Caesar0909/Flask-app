@@ -1,0 +1,15 @@
+{% extends 'themes/lrg-header-footer.html' %}
+
+{% block content %}
+
+<div class='col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 text-center' id = 'login'>
+	<h1>Two Factor Authentication Setup</h1>
+	<p>You are almost done! Please start your favorite 2FA app on your smartphone and scan the following QR Code.</p>
+	<p>
+		<img id = 'qrcode' src = "{{ url_for('auth.qrcode') }}">
+	</p>
+
+	<p class = 'text-center'>I'm done! Take me to the <a href = "{{ url_for('auth.login') }}">Login page</a></p>
+</div>
+
+{% endblock %}

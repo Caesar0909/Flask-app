@@ -1,0 +1,273 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:200,300, 400, 500');
+
+html, body {
+    font-family: 'Open Sans',Arial,Helvetica,Sans-Serif;
+    font-weight: 200;
+    height: 100%;
+    position: relative;
+}
+
+body {
+    min-height: 100vh;
+}
+
+select {
+    font-family: inherit;
+    background: transparent;
+    font-weight: 400;
+}
+
+select:focus {
+    outline: none;
+}
+
+.mdl-select {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid rgba(0,0,0,0.12);
+    border-radius: 0px;
+    padding: 4px 0;
+    /*-webkit-appearance: none;*/
+    margin: 0px 5px;
+}
+
+.flex-grow {
+    flex: 1;
+}
+
+/*PLOTLY LOADING BARS*/
+.plotlybars {
+  padding: 0 10px;
+  vertical-align: bottom;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+}
+
+
+.plotlybars-wrapper {
+  width: 165px;
+  height: 100px;
+  margin: 0 auto;
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+
+.plotlybars-text {
+  color: #447adb;
+  font-family: 'Open Sans', verdana, arial, sans-serif;
+  font-size: 80%;
+  text-align: center;
+  margin-top: 5px;
+}
+
+.plotlybars-bar {
+  background-color: #447adb;
+  height: 100%;
+  width: 13.3%;
+  position: absolute;
+
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+
+  animation-duration: 2s;
+  animation-iteration-count: infinite;
+  animation-direction: normal;
+  animation-timing-function: linear;
+
+  -webkit-animation-duration: 2s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-direction: normal;
+  -webkit-animation-timing-function: linear;
+}
+
+.b1 { left: 0%; top: 88%; animation-name: b1; -webkit-animation-name: b1; }
+.b2 { left: 14.3%; top: 76%; animation-name: b2; -webkit-animation-name: b2; }
+.b3 { left: 28.6%; top: 16%; animation-name: b3; -webkit-animation-name: b3; }
+.b4 { left: 42.9%; top: 40%; animation-name: b4; -webkit-animation-name: b4; }
+.b5 { left: 57.2%; top: 26%; animation-name: b5; -webkit-animation-name: b5; }
+.b6 { left: 71.5%; top: 67%; animation-name: b6; -webkit-animation-name: b6; }
+.b7 { left: 85.8%; top: 89%; animation-name: b7; -webkit-animation-name: b7; }
+
+@keyframes b1 { 0% { top: 88%; } 44% { top: 0%; } 94% { top: 100%; } 100% { top: 88%; } }
+@-webkit-keyframes b1 { 0% { top: 88%; } 44% { top: 0%; } 94% { top: 100%; } 100% { top: 88%; } }
+
+@keyframes b2 { 0% { top: 76%; } 38% { top: 0%; } 88% { top: 100%; } 100% { top: 76%; } }
+@-webkit-keyframes b2 { 0% { top: 76%; } 38% { top: 0%; } 88% { top: 100%; } 100% { top: 76%; } }
+
+@keyframes b3 { 0% { top: 16%; } 8% { top: 0%; } 58% { top: 100%; } 100% { top: 16%; } }
+@-webkit-keyframes b3 { 0% { top: 16%; } 8% { top: 0%; } 58% { top: 100%; } 100% { top: 16%; } }
+
+@keyframes b4 { 0% { top: 40%; } 20% { top: 0%; } 70% { top: 100%; } 100% { top: 40%; } }
+@-webkit-keyframes b4 { 0% { top: 40%; } 20% { top: 0%; } 70% { top: 100%; } 100% { top: 40%; } }
+
+@keyframes b5 { 0% { top: 26%; } 13% { top: 0%; } 63% { top: 100%; } 100% { top: 26%; } }
+@-webkit-keyframes b5 { 0% { top: 26%; } 13% { top: 0%; } 63% { top: 100%; } 100% { top: 26%; } }
+
+@keyframes b6 { 0% { top: 67%; } 33.5% { top: 0%; } 83% { top: 100%; } 100% { top: 67%; } }
+@-webkit-keyframes b6 { 0% { top: 67%; } 33.5% { top: 0%; } 83% { top: 100%; } 100% { top: 67%; } }
+
+@keyframes b7 { 0% { top: 89%; } 44.5% { top: 0%; } 94.5% { top: 100%; } 100% { top: 89%; } }
+@-webkit-keyframes b7 { 0% { top: 89%; } 44.5% { top: 0%; } 94.5% { top: 100%; } 100% { top: 89%; } }
+
+/* Landing page css */
+.navbar-brand img { margin-right: 10px; }
+.nav-btn { margin-right: 10px; }
+.site-wrapper {
+    min-height: 100%;
+    -webkit-box-shadow: inset 0 0 5rem rgba(0,0,0,.5);
+            box-shadow: inset 0 0 5rem rgba(0,0,0,.5);
+
+    background-image: url('../img/cover-delhi.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.sticky-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /*height: 60px;*/
+    line-height: 40px;
+    text-align: center;
+}
+
+.centered-card {
+    height: 100%;
+    background-color: #3F51B5;
+}
+
+h4.no-data {
+    text-align: center;
+    padding: 50px;
+}
+
+.navbar-opaque {
+    background: transparent;
+}
+
+#top-nav a {
+    color: inherit;
+}
+
+.icon-space-r {
+    padding-right: 5px;
+}
+
+.form-check-input {
+    margin-right: 10px;
+    padding: 10px;
+}
+.dark-footer {
+    background: #333;
+
+}
+.footer-group {
+    padding-top: 30px;
+}
+
+.footer-group h5 {
+    font-size: 16px;
+}
+.footer-link {
+    color: inherit;
+    padding: 0px;
+    margin: 0;
+    line-height: 30px;
+}
+.with-top-nav {
+    padding-top: 100px;
+}
+.footer-legend {
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.btn-chip {
+    margin: 3px;
+}
+.info-row {
+    padding: 30px;
+}
+
+
+
+
+
+/* MAP SHIT */
+#map {
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+    width: 100%;
+}
+
+.map-overlay {
+    border-radius; 20%;
+    position: absolute;
+    width: 300px;
+    bottom: 30px;
+    left: 0;
+    padding: 10px;
+}
+
+.map-overlay .map-overlay-inner {
+    border-radius; 20%;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.map-overlay-inner fieldset {
+    border: none;
+    padding: 0;
+    margin: 0 0 10px;
+}
+
+.legend-key {
+    display: inline-block;
+    border-radius: 20%;
+    border: 0.5px solid black;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    line-height: 18px;
+    font-weight: 400;
+}
+
+
+
+/*API DOCS SECTION */
+.api-docs {
+    padding-left: 25px;
+}
+#sidemenu {
+    position: fixed;
+    top: 100px;
+    bottom: 0;
+}
+.anchor {
+    padding-top: 100px;
+    margin-top: -100px;
+}
+
+.api-docs h2 {
+    color: #098BCC;
+}
+.api-docs h3 {
+    color: #098BCC;
+    border-top: 1px solid #E0E0E0;
+    border-bottom: 1px solid #E0E0E0;
+    background: #FCFCFC;
+    padding: 10px 0px;
+}
+
+.api-docs pre {
+    background: #202C33;
+    padding: 15px;
+    color: #CBCBCB;
+}

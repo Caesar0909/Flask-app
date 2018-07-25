@@ -1,0 +1,346 @@
+{% extends 'themes/fixed-header-footer-theme.html' %}
+
+{% block content %}
+
+<div class='container flex-grow with-top-nav'>
+    <div class='dashhead'>
+
+        <div class='dashhead-titles'>
+            <h6 class='dashhead-subtitle'>{{device.location}}</h6>
+            <h3 class='dashhead-title'>{{device.sn}}</h3>
+        </div>
+
+        <div class='dashhead-toolbar'>
+            <div class='btn-group dashhead-toolbar-item btn-group-thirds'>
+                <button type='button' class='btn btn-outline-primary active data-btn' value='1d'>Day</button>
+                <button type='button' class='btn btn-outline-primary data-btn' value='1w'>Week</button>
+                <button type='button' class='btn btn-outline-primary data-btn' value='2w'>2 Weeks</button>
+            </div>
+        </div><!-- end .dashhead-toolbar -->
+
+    </div><!-- end .dashhead -->
+
+    <ul class='nav nav-bordered mt-4 mt-md-2 mb-0 clearfix' role='tablist'>
+        <li class='nav-item' role='presentation'>
+            <a href='#plot' class='nav-link active' role='tab' data-toggle='tab' aria-controls="plot">Plot</a>
+        </li>
+
+        <li class='nav-item' role='presentation'>
+            <a href='#about' class='nav-link' role='tab' data-toggle='tab' aria-controls="about">About</a>
+        </li>
+
+        {% if current_user.canview(device) %}
+        <li class='nav-item' role='presentation'>
+            <a href='#data' class='nav-link' role='tab' data-toggle='tab' aria-controls="data">Downloads</a>
+        </li>
+        <li class='nav-item' role='presentation'>
+            <a href='#api' class='nav-link' role='tab' data-toggle='tab' aria-controls="api">API</a>
+        </li>
+        {% endif %}
+        {% if current_user.can_manage %}
+        <li class='nav-item' role='presentation'>
+            <a href='#logs' class='nav-link' role='tab' data-toggle='tab' aria-controls="logs">Logs</a>
+        </li>
+        {% endif %}
+    </ul><!-- end .nav nav-bordered -->
+
+    <hr class='mt-0 mb-5'>
+
+    <div class='tab-content'>
+        <div role='tabpanel' class='tab-pane active' id='plot'>
+            <div class=''>
+                <span>Showing  </span>
+                <select class='mdl-select col-2 item-selector' id='item-selector'></select>
+
+                <span> values for the past few hours.</span>
+            </div>
+
+            <div class='plotly-plot' id='plot-holder'></div>
+
+        </div><!-- end .tabpanel -->
+
+        <div role='tabpanel' class='tab-pane' id='about'>
+            <dl class='row info-row'>
+                <dt class='col-sm-3'>Location</dt>
+                <dd class='col-sm-9'>{{device.location}}</dd>
+
+                <dt class='col-sm-3'>City</dt>
+                <dd class='col-sm-9'>{{device.city}}</dd>
+
+                <dt class='col-sm-3'>Country</dt>
+                <dd class='col-sm-9'>{{device.country}}</dd>
+
+                <dt class='col-sm-3'>Coordinates</dt>
+                <dd class='col-sm-9'>{{device.latitude}}, {{device.longitude}}</dd>
+
+                <dt class='col-sm-3'>Timezone</dt>
+                <dd class='col-sm-9'>{{device.timezone}}</dd>
+
+                <dt class='col-sm-3'>Model</dt>
+                <dd class='col-sm-9'>{{device.model}}</dd>
+            </dl>
+        </div><!-- end .tabpanel -->
+
+        {% if current_user.canview(device) %}
+        <div role='tabpanel' class='tab-pane' id='data'>
+            <p>
+                To supplement the API, data for each device is saved in csv format on a daily
+                and monthly basis. Each file contains the data for either one day, or the entire
+                month and can be downloaded by clicking its link.
+            </p>
+            <p>
+                If that isn't satisfactory, you can also customize your selection by clicking
+                <a href='#data-modal' class='' data-toggle='modal' data-target='#data-modal'>here</a>
+            </p>
+
+
+            <div class="hr-divider" style='margin-top:25px;'>
+              <h3 class="hr-divider-content hr-divider-heading">Pre-Compiled Data</h3>
+            </div>
+
+            <h4>Coming Soon!</h4>
+        </div><!-- end .tabpanel -->
+
+        <div role='tabpanel' class='tab-pane' id='api'>
+            <h3 class='text-center'>Coming Soon</h3>
+        </div><!-- end .tabpanel -->
+        {% endif %}
+
+        {% if current_user.can_manage %}
+        <div role='tabpanel' class='tab-pane' id='logs'>
+            <div class='flextable table-actions'>
+                <div class='flextable-item flextable-primary'>
+                    <div class='btn-toolbar-item input-with-icon'>
+                        <input type='text' class='form-control input-block' placeholder='Search Logs' id='logs'>
+                        <span class='icon icon-magnifying-glass'></span>
+                    </div><!-- end .btn-toolbar-item -->
+                </div><!-- end .flextable-item -->
+
+                <!--
+                <div class='flextable-item'>
+                    <div class='btn-group'>
+                        <button type='button' class='btn btn-outline-primary'>
+                            <span class='icon icon-pencil'></span>
+                        </button>
+                        <button type='button' class='btn btn-outline-primary'>
+                            <span class='icon icon-erase'></span>
+                        </button>
+                    </div>
+                </div>
+                -->
+            </div><!-- end flextable actions -->
+
+            <div class='table-responsive'>
+                <table class='table' data-sort='logs-table' id='logs'>
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>Message</th>
+                            <th>Opened</th>
+                            <th>Addressed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td>{{ log.level }}</td>
+                            <td>{{ log.message }}</td>
+                            <td>{{ moment(log.opened).fromNow() }}</td>
+                            <td>{{ log.addressed }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div><!-- end .table-responsive -->
+        </div><!-- end .tabpanel -->
+
+        {% endif %}
+    </div><!-- end .tab-content -->
+</div>
+
+{% endblock %}
+
+{% block modal %}
+{{ super() }}
+<!-- set up the generate token model with form -->
+<div class='modal fade' id='data-modal' tabindex="-1" role='dialog' aria-labelledby="data-modal" aria-hidden='true'>
+    <div class='modal-dialog modal-md' role='document'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h5 class='modal-title mx-auto'>Data Download</h5>
+                <button type='button' class='close' data-dismiss='modal' aria-label="Close">
+                    <span aria-hidden='true'>&times;</span>
+                </button>
+            </div>
+            <div class='modal-body'>
+                <div class='container'>
+                    <p class='text-center'>Customize the data you want to download...</p>
+
+                    <form>
+                        <div class='form-group row'>
+                            <label class='col-sm-3 col-form-label'>Device SN</label>
+                            <div class='col-sm-9'>
+                                <p class='form-control-static' data-sn="{{device.sn}}" id='form-sn'>{{device.sn}}</p>
+                            </div>
+                        </div>
+
+                        <div class='form-group row'>
+                            <label for='form-start' class='col-sm-3 col-form-label'>Start Date</label>
+                            <div class='col-sm-9 input-group'>
+                                <span class='input-group-addon'>
+                                    <span class='icon icon-calendar'></span>
+                                </span>
+                                <input type='text' class='form-control' id='form-start-date' data-provide='datepicker' value="{{datepicker_start}}">
+                            </div>
+                        </div>
+
+                        <div class='form-group row'>
+                            <label for='form-end' class='col-sm-3 col-form-label'>End Date</label>
+                            <div class='col-sm-9 input-group'>
+                                <span class='input-group-addon'>
+                                    <span class='icon icon-calendar'></span>
+                                </span>
+                                <input type='text' class='form-control' id='form-end-date' data-provide='datepicker' value="{{datepicker_end}}" required>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn-link modal-action" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn-link modal-action btn-primary" id='btn-submit'>
+                    <span class='icon icon-download' style='padding-right:5px;'></span>
+                    <strong>Download Selection (csv)</strong>
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js_extra %}
+{{super()}}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+<script type='text/javascript' charset='utf-8'>
+    $('body').on('click', "#btn-submit", downloadData);
+
+    // Make the logs table sortable
+    if ($('table#logs')){
+        searchTable('logs');
+    }
+
+    var aspect = 0.5;
+    var w  	= $('#plot-holder').width();
+    var h 	= w * aspect;
+
+    var socket;
+    var data;
+    var meta;
+    var items;
+
+    var selector = document.getElementById('item-selector');
+
+    function updateItem() { redrawScatterPlot( selector.value);};
+
+    // Add a listener to the event
+    selector.addEventListener('change', updateItem, false);
+
+    // Function to draw plot (should only be run once for each actual set of data)
+    function resetPlotlyWindow(raw){
+        data  = raw['data'];
+        meta  = raw['meta'];
+
+        items = meta['keys'];
+
+        // Remove old options in select box
+        selector.options.length = 0;
+
+        // Set the options
+        setSelectOptions(items, selector);
+
+        // Plot the first option
+        redrawScatterPlot(items[0]);
+    };
+
+    // Draw this item on the plot
+    function redrawScatterPlot(item_to_plot) {
+        // grab the meta information
+        var units = meta['units'];
+
+        // unpack the values
+        var xvals = unpack(data, 'timestamp');
+        var yvals = unpack(data, item_to_plot);
+
+        // Index of the item to plot
+        var i = items.indexOf(item_to_plot);
+
+        // Set the layout of the plot
+        var traces = [{
+            x: xvals,
+            y: yvals,
+            mode: 'markers'
+        }];
+
+        var layout = {
+            title: meta['title'],
+            autosize: false,
+        	width: w,
+        	height: h,
+        	titlefont: { size: 18 },
+            yaxis: {
+        		title: item_to_plot + ' (' + units[i] + ')',
+        		titlefont: { size: 15 }
+        	},
+            xaxis: {
+            	showgrid: false,
+            },
+        };
+
+        if (yvals.length > 0){
+            document.getElementById('plot-holder').innerHTML = '';
+
+            Plotly.newPlot('plot-holder', traces, layout, {displaylogo: false});
+        }
+        else {
+            document.getElementById('plot-holder').innerHTML = "<h4 class='no-data'>It looks like there is no available data for this parameter.</h4>";
+        }
+    };
+
+    $(document).ready(function(){
+        // Show loading bars while we wait for the page to load
+        plotlyLoadingBars('plot-holder');
+
+        var ns = '/device';
+        socket = io.connect(window.location.protocol + '//' + document.domain + ':' + location.port + ns);
+
+        socket.on('update data', function(data){
+            resetPlotlyWindow(data['results']);
+        });
+
+        $('.data-btn').on('click', function(e){
+            // Get the value (length of data to grab)
+            var value = this.value;
+            var sn = "{{device.sn}}";
+            var secret = "{{private}}";
+
+            // Change the active button
+            $(this).addClass('active').siblings().removeClass('active');
+
+            // Turn plotly bars to loading state
+            plotlyLoadingBars('plot-holder');
+
+            // Emit
+            socket.emit('more data', {lot: value, sn:sn, secret:secret});
+        });
+
+        // Load 1 day of data by default
+        socket.emit('more data', {lot: '1d', sn:"{{device.sn}}", secret:"{{private}}"});
+    });
+
+</script>
+{% endblock %}

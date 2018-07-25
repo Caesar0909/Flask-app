@@ -1,0 +1,50 @@
+<nav class='navbar navbar-toggleable-md fixed-top navbar-inverse bg-inverse'>
+    <button class='navbar-toggler navbar-toggler-right' type='button' data-toggle='collapse' data-target='#navToggle' aria-controls="navToggle" aria-expanded='false' aria-label="Toggle Navigation">
+        <span class='navbar-toggler-icon'></span>
+    </button>
+    <a class='navbar-brand' href="{{url_for('main.index')}}">
+        <img src="{{url_for('static', filename='img/AQ_ninja.png')}}" width='25' height='30' class='d-inline-block align-top' alt=''>TATA CENTER AIR QUALITY
+    </a>
+
+    <div class='collapse navbar-collapse justify-content-end' id='navToggle'>
+        <ul class='navbar-nav'>
+            <li class='nav-item nav-btn'>
+                <a class='nav-link btn' href="{{url_for('main.map')}}">MAP</a>
+            </li>
+            {% if not current_user.is_authenticated %}
+            <li class='nav-item nav-btn'>
+                <a class='nav-link btn' href="{{url_for('auth.login')}}">LOGIN</a>
+            </li>
+            <li class='nav-item nav-btn nav-btn-primary'>
+                <a class='nav-link btn btn-outline-primary' href="{{url_for('auth.register')}}">SIGN UP</a>
+            </li>
+            {% else %}
+                {% if current_user.can_manage %}
+                <li class='nav-item nav-btn'>
+                    <a class='nav-link btn' href="{{url_for('admin.index')}}">ADMIN</a>
+                </li>
+                {% endif %}
+
+                <li class='nav-item nav-btn'>
+                    <a class='nav-link btn' href="{{url_for('main.user_api')}}">API</a>
+                </li>
+
+                <li class='nav-item nav-btn'>
+                    <a class='nav-link btn' href="{{url_for('main.user_portal')}}">DEVICES</a>
+                </li>
+
+                <li class='nav-item dropdown hidden-md-down'>
+                    <a class='nav-link dropdown-toggle' data-toggle='dropdown' href='#' role='button' aria-haspopup="true" aria-expanded='false'>{{ current_user.email }}</a>
+                    <div class='dropdown-menu text-center'>
+                        <a class='dropdown-item' href="{{ url_for('main.change_settings') }}">SETTINGS</a>
+                        <div class="dropdown-divider"></div>
+                        <a class='dropdown-item' href="{{ url_for('auth.logout') }}">LOGOUT</a>
+                    </div>
+                </li>
+                <li class='nav-item hidden-lg-up nav-btn'>
+                    <a class='nav-link btn' href="{{url_for('auth.logout')}}">LOGOUT</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

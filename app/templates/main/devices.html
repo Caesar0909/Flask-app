@@ -1,0 +1,71 @@
+{% extends 'themes/icon-nav-theme.html' %}
+
+{% block content %}
+<div class='container'>
+
+    <div class='row justify-content-md-center'>
+        <div class='col-lg-12'>
+            <h1>Devices</h1>
+
+            <hr class='mt-0 mb-5'>
+
+            {% include 'main/flash.html' %}
+
+            {% if devices %}
+            <div class='table-responsive'>
+                <table class='table' data-sort='devices-table' id='devices-table'>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Model</th>
+                            <th>Location</th>
+                            <th>Last Seen</th>
+                            <th>Group</th>
+                            {% if current_user.can_manage %}
+                            <th>More</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in devices %}
+                        <tr>
+                            <td><a href="{{url_for('main.view_public_device', sn=d.sn)}}">{{d.sn}}</a></td>
+                            <td>{{d.model}}</td>
+                            <td>{{d.location}}</td>
+                            <td>{{moment(d.last_updated).fromNow()}}</td>
+                            <td>{{d.group}}</td>
+                            {% if current_user.can_manage %}
+                            <td>
+                                <a href="{{url_for('admin.instrument', sn=d.sn)}}" class='btn btn-outline-primary'><span class='icon icon-edit icon-space-r'></span>Edit</a>
+
+                                {% if current_user.can_delete %}
+                                <a href="{{url_for('admin.drop_instrument', id=d.id)}}" class='btn btn-outline-danger'><span class='icon icon-trash icon-space-r'></span>Delete</a>
+                                {% endif %}
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div><!-- end table responsive -->
+            {% else %}
+            <p>It looks like you have no devices yet. Registration will become available soon!</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js_extra %}
+{{ super() }}
+<script>
+
+$(document).ready(function(){
+    $('[data-sort=devices-table]').tablesorter({
+        sortList: [[1,0]]
+    });
+});
+
+</script>
+{% endblock %}

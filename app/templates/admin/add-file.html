@@ -1,0 +1,25 @@
+{% extends 'themes/side-nav.html' %}
+{% from 'macros.html' import render_form_field %}
+
+{% block content %}
+
+<div class = 'mdl-grid'>
+	<div class = 'mdl-cell mdl-cell--12-col mdl-cell--8-col-desktop mdl-cell--2-offset-desktop mdl-cell--middle'>
+		{% if form %}
+		<h1 class = 'centered'>
+			Add File
+		</h1>
+		<form action = "" method = 'post' name = 'form' class = 'horizontal-form' enctype = 'multipart/form-data'>
+			{{ form.hidden_tag() }}
+
+			{{ render_form_field(form.file, classes = 'mdl-cell--12-col', label = True) }}
+			{{ render_form_field(form.device, classes = 'mdl-cell--12-col', label = True )}}
+
+			<button class = 'mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-cell--12-col' type = 'submit'>Submit</button>
+		</form>
+
+		{% endif %}
+	</div>
+</div>
+
+{% endblock %}

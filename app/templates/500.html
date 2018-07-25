@@ -1,0 +1,19 @@
+{% extends 'themes/fixed-header-footer-theme.html' %}
+
+{% block content %}
+<div class='container with-top-nav error-page flex-grow'>
+    <h1>Error 500</h1>
+    <p>
+        Something has gone terribly wrong...
+    </p>
+
+    {% if event_id %}
+      <script>
+      Raven.showReportDialog({
+        eventId: '{{ event_id }}',
+        dsn: '{{ public_dsn }}'
+      });
+      </script>
+    {% endif %}
+</div>
+{% endblock %}

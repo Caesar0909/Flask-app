@@ -1,0 +1,54 @@
+{% extends 'themes/icon-nav-theme.html' %}
+{% from 'macros.html' import render_field %}
+
+{% block content %}
+<div class='container'>
+	<div class='row'>
+		<div class='col-lg-12'>
+			<h1 style='margin-bottom:30px;'>Edit Device</h1>
+
+			<hr class='mt-0 mb-5'>
+
+			{% include 'main/flash.html' %}
+
+			<form action="" method='post' name='form' style='margin-bottom: 40px;'>
+				{{form.hidden_tag()}}
+
+				{% if sn %}
+				{% set readonly = true %}
+				{% else %}
+				{% set readonly = false %}
+				{% endif %}
+
+				{{ render_field(form.sn, label=True, pattern='.{5,24}', error_msg='Must be at least 5 characters and less than 24.', readonly=readonly) }}
+
+				{% if current_user.can_manage %}
+					{{ render_field(form.particle_id, label=True, pattern='.{5,24}') }}
+					{{ render_field(form.owner, label=True, classes='form-control col-lg-4') }}
+					{{ render_field(form.group, label=True, classes='form-control col-lg-4') }}
+
+					{{ render_field(form.model, label=True, classes='form-control col-lg-4', disabled=readonly) }}
+					{{ render_field(form.discriminator, label=True, classes='form-control col-lg-4', disabled=readonly) }}
+				{% endif %}
+
+				{{ render_field(form.location, label=True) }}
+				{{ render_field(form.city, label=True) }}
+				{{ render_field(form.country, label=True) }}
+				<!-- enter timezone field here -->
+				{{ render_field(form.timezone, label=True) }}
+				{{ render_field(form.latitude, label=True, pattern="-?[0-9]*(\.[0-9]+)?", error_msg='Must be a valid latitude.') }}
+				{{ render_field(form.longitude, label=True, pattern="-?[0-9]*(\.[0-9]+)?", error_msg='Must be a valid longitude.') }}
+
+				{{ render_field(form.outdoors, label=True) }}
+
+				{{ render_field(form.description, label=True)}}
+
+
+				<button type='submit' class='btn btn-outline-primary btn-block'>SUBMIT</button>
+
+			</form>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<div class='site-wrapper'>
+
+    {% include 'nav/landing-page-nav.html' %}
+
+    <footer class='footer sticky-footer'>
+        <div class='container'>
+            <span class='text-muted'>Copyright &copy; 2015-2018. Tata Center Air Quality Project.</span>
+        </div>
+    </footer>
+</div>
+
+{% endblock %}
+
+
+<!--
+{block extra_header}
+    <script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
+    <link href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' rel='stylesheet' />
+{endblock}
+-->
+
+<!--
+{block content}
+    <div style = 'width:100%;' id = 'map'></div>
+{endblock}
+-->
+
+<!--
+{block extra_js}
+<script>
+    $('body').addClass('map-pad');
+
+    L.mapbox.accessToken = 'pk.eyJ1IjoiZGhhZ2FuIiwiYSI6ImNpbzRrMmM0YzAxa3Z2YWtqem9uODNoNDcifQ.hzYoN3WTixS6ZJvhRR939Q';
+
+    var setMapHeight = function(){
+        var h = $( window ).height() - $('footer').height();
+
+        $('#map').height(h);
+    };
+
+    // Set the map to the correct height
+    setMapHeight();
+
+    var map = L.mapbox.map('map', 'mapbox.light')
+      .setView([28.7041, 77.1025], 10);
+
+    var myLayer = L.mapbox.featureLayer().addTo(map);
+
+    var geoJSON_features = [];
+
+    {% for each in for_map %}
+    var tmp = {
+        type: 'Feature',
+        properties: {
+            title: "{{ each.title | safe }}",
+            description: "{{ each.description | safe }}",
+            'marker-color': "{{ each.marker_color | safe }}",
+            'marker-size': 'small',
+            'marker-symbol': 'star',
+            url: "{{ each.url | safe }}"
+        },
+        geometry: {
+            type: 'Point',
+            coordinates: [{{ each.longitude }}, {{ each.latitude }}]
+        }
+    }
+
+    geoJSON_features.push(tmp);
+    {% endfor %}
+
+    var geojson = {
+        type: 'FeatureCollection',
+        features: geoJSON_features
+    };
+
+    myLayer.setGeoJSON(geojson);
+
+    myLayer.on('mouseover', function(e) {
+        e.layer.openPopup();
+    });
+
+    myLayer.on('mouseout', function(e) {
+        e.layer.closePopup();
+    });
+
+    myLayer.on('click', function(e) {
+        window.open(e.layer.feature.properties.url);
+    });
+
+    $( window ).resize(function(){
+        setMapHeight();
+    });
+
+</script>
+{endblock}
+-->

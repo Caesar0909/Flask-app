@@ -1,0 +1,88 @@
+{% extends 'themes/icon-nav-theme.html' %}
+{% from 'macros.html' import render_field %}
+
+{% block content %}
+<div class='container'>
+
+    <div class='row justify-content-md-center'>
+        <div class='col-lg-12'>
+            <h1>Application & API</h1>
+
+            <hr class='mt-0 mb-5'>
+
+            {% include 'main/flash.html' %}
+
+            <div class='dashhead' style='margin-top: 40px;'>
+                <div class='dashhead-titles'>
+                    <h3 class='dashhead-title'>Personal Access Tokens</h3>
+                    <h6 class='dashhead-subtitle'>Tokens you have generated to access the <a href="{{url_for('main.api_docs')}}">TataAQ API</a></h6>
+                </div>
+
+                <div class='dashhead-toolbar'>
+                    <button type='button' class='btn btn-outline-primary' data-toggle='modal' data-target='#tokenModal'>Generate New Token</button>
+                </div>
+            </div>
+
+            <hr class='mt-0 mb-5'>
+
+            <div class='table-responsive'>
+                <table class='table' data-sort='users-table' id='users-table'>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Key</th>
+                            <th>Scope</th>
+                            <th>Created</th>
+                            <th>More</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in tokens %}
+                        <tr>
+                            <td>{{t.name}}</td>
+                            <td>{{t.key}}</td>
+                            <td>
+                                {% for scope in t.get_scope() %}
+                                <button type='button' class='btn btn-outline-secondary'>{{scope}}</button>
+                                {% endfor %}
+                            </td>
+                            <td>{{moment(t.created).fromNow()}}</td>
+                            <td>
+                                <a href="{{url_for('main.drop_token', id=t.id)}}" class='btn btn-outline-danger'><span class='icon icon-trash icon-space-r'></span>Delete</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div><!-- end table responsive -->
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block modal %}
+{{ super() }}
+<!-- set up the generate token model with form -->
+<div class='modal fade' id='tokenModal' tabindex="-1" role='dialog' aria-labelledby="tokenModal" aria-hidden='true'>
+    <div class='modal-dialog' role='document'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <h5 class='modal-title'>New Personal Access Token</h5>
+                <button type='button' class='close' data-dismiss='modal' aria-label="Close">
+                    <span aria-hidden='true'>&times;</span>
+                </button>
+            </div>
+            <div class='modal-body'>
+                <form action="{{url_for('main.user_api')}}" method='post' name='form' style='padding-top:20px;'>
+                    {{ form.hidden_tag() }}
+
+                    {{ render_field(form.name, label=True, pattern=".{3,}", error_msg='Must be at least 3 characters') }}
+
+                    <button type='submit' class='btn btn-outline-primary btn-block'>GENERATE TOKEN</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

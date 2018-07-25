@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block head_extra %}
+    {{ pagedown.include_pagedown() }}
+{% endblock %}
+
+{% block main %}
+
+<div class='with-iconav'>
+    {% include 'nav/icon-navigation.html' %}
+
+    <!-- this is where everything else goes -->
+    <div class='container'>
+        <!-- if on a larger screen, add a navbar -->
+        {% include 'nav/dashboard-top-nav.html' %}
+        {% block content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}

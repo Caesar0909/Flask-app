@@ -1,0 +1,70 @@
+<div class = 'mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--no-desktop-drawer-button'>
+    <header class = 'mdl-layout__header'>
+        <div class = 'mdl-layout__header-row'>
+            <span class = 'mdl-layout-title' id = 'title-header'><a href = "{{ url_for('main.index') }}">Tata Center Air Quality</a></span>
+
+            <div class = 'mdl-layout-spacer'></div>
+
+            <nav class = 'mdl-navigation'>
+                {% if current_user.is_authenticated %}
+                        {% if current_user.is_administrator %}
+                            <a class = 'mdl-navigation__link' href="{{ url_for('admin.index') }}">ADMIN</a>
+                        {% endif %}
+                    <a class = 'mdl-navigation__link' href = "{{ url_for('main.user_portal') }}">DASHBOARD</a>
+                    <a class = 'mdl-navigation__link' href = "{{ url_for('main.user_api') }}">API</a>
+
+                    <!-- Login & Logout Options -->
+                    <button class = 'mdl-button mdl-js-button mdl-button--icon mdl-js-ripple-effect' id = 'user-menu'>
+                        <i class = 'material-icons'>more_vert</i>
+                    </button>
+                    <ul class = 'mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect' for='user-menu'>
+                        <li class = 'mdl-menu__item'><a href = "{{ url_for('main.change_settings') }}"><i class="material-icons nav-icon">person</i>SETTINGS</a></li>
+                        <li class = 'mdl-menu__item mdl-menu__item-full-bleed-divider'><a href = "{{ url_for('auth.logout') }}"><i class="material-icons nav-icon">undo</i>LOGOUT</a></li>
+                        <li disabled class = 'mdl-menu__item'><span class = 'centered'>{{ current_user.email }}</span></li>
+                    </ul>
+                {% else %}
+                    <a class = 'mdl-button mdl-js-button mdl-login-button mdl-layout--large-screen-only' href="{{ url_for('auth.login') }}">Login</a>
+                {% endif %}
+            </nav>
+        </div>
+        {% if request.path == '/docs' %}
+        <div class = 'mdl-layout__tab-bar mdl-js-ripple-effect'>
+            <a href = "#section1" class = 'mdl-layout__tab is-active'>Introduction</a>
+            <a href = "#section2" class = 'mdl-layout__tab'>Devices</a>
+            <a href = "#section3" class = 'mdl-layout__tab'>Data</a>
+        </div>
+        {% endif %}
+    </header>
+
+    <div class = 'mdl-layout__drawer'>
+        <span class = 'mdl-layout-title'>Tata Center A.Q.</span>
+        <nav class = 'mdl-navigation'>
+            {% if current_user.is_authenticated %}
+                <span class = 'mdl-navigation__link' href = "" disabled>
+                    {{ current_user.username }}
+                    <button class = 'mdl-button mdl-js-button mdl-button--icon' id = 'side-menu' style = 'float: right;'>
+                        <i class = 'material-icons'>expand_more</i>
+                    </button>
+                </span>
+                <span class = 'mdl-navigation__link spacer mdl-color-text--pink'>
+                    Navigation
+                </span>
+
+
+                <ul class = 'mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect' for='side-menu'>
+                    <li class = 'mdl-menu__item'><a href = "{{ url_for('main.change_settings') }}"><i class="material-icons nav-icon">person</i>Settings</a></li>
+                    <li class = 'mdl-menu__item'><a href = "{{ url_for('auth.logout') }}"><i class="material-icons nav-icon">undo</i>Logout</a></li>
+                </ul>
+
+                {% if current_user.is_administrator %}
+                <a class = 'mdl-navigation__link' href="{{ url_for('admin.index') }}">ADMIN</a>
+                {% endif %}
+                <a class = 'mdl-navigation__link' href = "{{ url_for('main.user_portal') }}">DASHBOARD</a>
+                <a class = 'mdl-navigation__link' href = "{{ url_for('main.user_api') }}">API</a>
+
+            {% else %}
+                <a class = "mdl-navigation__link" href = "{{ url_for('auth.login')}}">LOGIN</a>
+            {% endif %}
+        </nav>
+    </div>
+</div>

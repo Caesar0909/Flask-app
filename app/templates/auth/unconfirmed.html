@@ -1,0 +1,20 @@
+{% extends 'themes/fixed-header-footer-theme.html' %}
+
+{% block content %}
+<div class='container flex-grow with-top-nav'>
+    <div class='row'>
+        <div class='col-12 h-50 justify-content-center align-items-center'>
+            {% include 'main/flash.html' %}
+
+            <h1>Hello, {{ current_user.username }}</h1>
+    		<p>
+    			Thank you for registering! It appears you have not confirmed your
+                account yet. To do so, please follow the link in the confirmation
+                email. If you are having issues or did not receive the email,
+                please contact us or re-send the confirmation email.
+    		</p>
+    		<a href="{{ url_for('auth.resend_confirmation') }}" class='btn btn-outline-primary'>Resend Confirmation</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'themes/bare-login-theme.html' %}
+{% from 'macros.html' import render_field %}
+
+{% block centered_form %}
+
+<h1 class='card-title' style='margin-bottom:30px;'>RESET PASSWORD</h1>
+
+<p>
+	To reset your password, please submit the email address associated with your account and wait for an email with further instructions.
+</p>
+
+<form action="{{url_for('auth.forgot_password')}}" method='post' name='form'>
+	{{ form.hidden_tag() }}
+
+	{{ render_field(form.email, pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}.$", placeholder='email', error_msg='Please enter a valid email') }}
+
+	<button type='submit' class='btn btn-outline-primary btn-block'>RESET</button>
+</form>
+
+{% endblock %}

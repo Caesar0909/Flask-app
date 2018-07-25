@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang='en'>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-64264668-2"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'UA-64264668-2');
+        </script>
+
+
+        {% if title %}
+            <title>{{title}}</title>
+        {% else %}
+            <title>Tata Center Air Quality</title>
+        {% endif %}
+
+        {% if meta %}
+        <meta name='description' content="{{ meta }}">
+        {% else %}
+        <meta name='description' content="Low cost sensor magic by MIT.">
+        {% endif %}
+
+        <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+
+        {% assets "css_all" %}
+            <link rel='stylesheet' type='text/css' href="{{ ASSET_URL }}">
+        {% endassets %}
+
+        {{ moment.include_moment() }}
+
+        <!-- make room for extra stuff -->
+        {% block head_extra %}{% endblock %}
+
+    </head>
+
+    <body class='d-flex flex-column' data-target='#sidemenu' data-spy='scroll'>
+        <!-- Include some js -->
+        {% assets "js_all" %}
+            <script type='text/javascript' src="{{ ASSET_URL }}"></script>
+        {% endassets %}
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+        <script src="https://cdn.ravenjs.com/2.1.0/raven.min.js"></script>
+        <!--<script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>-->
+        <!--<script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js'></script>-->
+
+        <script>
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            });
+
+            // Make alerts fade away
+            $(document).ready(function(){
+                setTimeout(function(){
+                    $('.alert-dismissable').alert('close');
+                }, 5000);
+            });
+        </script>
+
+        <!-- this is where the main stuff will go -->
+        {% block main %}{% endblock %}
+
+        <!-- add a modal -->
+        {% block modal %}{% endblock %}
+
+        <!-- add some extra js -->
+        {% block js_extra %}{% endblock %}
+
+    </body>
+</html>

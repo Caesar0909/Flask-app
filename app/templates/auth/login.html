@@ -1,0 +1,27 @@
+{% extends 'themes/bare-login-theme.html' %}
+{% from 'macros.html' import render_field %}
+
+{% block centered_form %}
+
+<h1 class='card-title' style='margin-bottom:30px;'>LOG IN</h1>
+
+<form action="{{url_for('auth.login')}}" method='post' name='form'>
+	{{ form.hidden_tag() }}
+
+	{{ render_field(form.email, pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}.$", placeholder='email', error_msg='Must be a valid email address') }}
+
+	{{ render_field(form.password, pattern=".{5,}", placeholder='password', error_msg='Must be more than 5 characters')}}
+
+	<button type='submit' class='btn btn-outline-primary btn-block'>SIGN IN</button>
+
+</form>
+
+<div class='text-muted' style='margin-top: 15px;'>
+	<a href="{{url_for('auth.forgot_password')}}">Forgot Password?</a>
+</div>
+
+<div style='margin-top: 25px;'>
+	<span>Don't have an account? <a href="{{url_for('auth.register')}}">Sign Up</a></span>
+</div>
+
+{% endblock %}

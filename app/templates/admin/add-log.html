@@ -1,0 +1,32 @@
+{% extends 'themes/icon-nav-theme.html' %}
+{% from 'macros.html' import render_field %}
+
+{% block content %}
+
+<div class='container'>
+	<div class='row'>
+		<div class='col-lg-12'>
+			<h1 style='margin-bottom:30px;'>Add Log</h1>
+
+			<hr class='mt-0 mb-5'>
+
+			{% include 'main/flash.html' %}
+
+            {% if form %}
+
+			<form action="" method='post' name='form' style='margin-bottom: 40px;', enctype='multipart/form-data'>
+				{{form.hidden_tag()}}
+
+                {{ render_field(form.level, formclasses='form-group col-md-6', label=True) }}
+                {{ render_field(form.instrument, formclasses='form-group col-md-4', label=True) }}
+                {{ render_field(form.message, label=True, formclasses='form-group col-md-12') }}
+
+				<button type='submit' class='btn btn-outline-primary btn-block'>SUBMIT</button>
+			</form>
+
+            {% endif %}
+		</div>
+	</div>
+</div>
+
+{% endblock %}

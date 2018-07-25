@@ -1,0 +1,93 @@
+{% extends 'themes/lrg-header-footer.html' %}
+
+{% block content %}
+<div class = 'mdl-grid'>
+    <div class = 'mdl-cell mdl-cell--12-col mdl-cell--10-col-desktop mdl-cell--1-offset-desktop'>
+        <div class = 'mdl-grid'>
+            <div class = 'mdl-cell mdl-cell--12-col'>
+                {% include 'main/descriptions/data-downloads.html' %}
+            </div>
+
+            {% if data | length > 0 %}
+            <div class = 'mdl-cell mdl-cell--12-col mdl-cell--10-col-desktop mdl-cell--1-offset-desktop'>
+                <button class = "mdl-button mdl-js-button mdl-button--accent mdl-cell mdl-cell--12-col" style="display:none;" onclick = "processDownloads()" id="download-btn">Download Selected Data</button>
+            </div>
+
+            <div class = 'mdl-cell mdl-cell--12-col'>
+                <table class = 'mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp table-centered table-collapsable'>
+                    <thead>
+                        <tr>
+                            <th class = 'mdl-data-table__cell--non-numeric'>Device</th>
+                            <th class = 'mdl-data-table__cell--non-numeric'>Filename</th>
+                            <th class = 'mdl-data-table__cell--non-numeric'>Start Date</th>
+                            <th class = 'mdl-data-table__cell--non-numeric'>Last Updated</th>
+                            <th>File Size (MB)</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in data %}
+                        <tr>
+                            <td class = 'mdl-data-table__cell--non-numeric'>{{ r.key.split('/')[0] | upper }}</td>
+                            <td class = 'mdl-data-table__cell--non-numeric'>{{ r.key.split('/')[-1].split('.')[0] | upper }}</td>
+                            <td class = 'mdl-data-table__cell--non-numeric'>{{ r.date }}</td>
+                            <td class = 'mdl-data-table__cell--non-numeric'>{{ moment(r.last_modified).calendar() }}</td>
+                            <td>{{ r.size_mb | round(2)  }}</td>
+                            <td><a href = "{{r.presigned_url(s3_client)}}"><i class = 'material-icons'>cloud_download</i></a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% else %}
+            <h5 style = 'text-align:center;'>Oops! It looks like no data is available at this time</h5>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script type = 'text/javascript'>
+
+function processDownloads() {
+    $("tr.is-selected").each(function(i, tr) {
+        var value = $(tr).find("td:last").find('a').attr('href');
+        var checkbox = $(tr).find("td:first").find('label');
+
+        window.location.assign(value);
+
+        $(tr).removeClass('is-selected');
+    });
+
+    // Refresh the top check button in case it's lit up!
+    $('label.mdl-checkbox').removeClass('is-checked');
+};
+
+function debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+        var context = this, args = arguments;
+        var later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+    };
+}
+
+$(document).on("click", ".mdl-checkbox", debounce(function (e) {
+    var isChecked = !$(this).hasClass("is-checked");
+    var btn = $("#download-btn");
+
+    if (isChecked == true) {
+        //btn.removeClass('hidden');
+        btn.show(400);
+    }
+}, 250, true));
+</script>
+{% endblock %}

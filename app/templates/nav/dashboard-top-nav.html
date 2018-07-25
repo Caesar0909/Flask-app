@@ -1,0 +1,14 @@
+<div class='row hidden-sm-down'>
+    <div class='col-12'>
+        <ul class='nav justify-content-end' id='top-nav'>
+            <li class='nav-item dropdown'>
+                <a class='nav-link dropdown-toggle' data-toggle='dropdown' href='#' role='button' aria-haspopup="true" aria-expanded='false'>{{ current_user.email }}</a>
+                <div class='dropdown-menu text-center'>
+                    <a class='dropdown-item' href="{{ url_for('main.change_settings') }}">Settings</a>
+                    <div class="dropdown-divider"></div>
+                    <a class='dropdown-item' href="{{ url_for('auth.logout') }}">Logout</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

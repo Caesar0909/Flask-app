@@ -1,0 +1,96 @@
+<!-- Macro for rendering bootstrap form fields -->
+{% macro render_field(field, pattern='.*', error_msg='', classes='form-control', placeholder='', label=False, formclasses='form-group', readonly=False) %}
+
+{% if field.errors %}
+    {% set classes = classes + " form-control-danger" %}
+    {% set formclasses = formclasses + " has-danger" %}
+{% endif %}
+
+{% if field.type == 'BooleanField' %}
+    <div class='form-check'>
+        <label class='form-check-label'>
+            {{ field(label=field.label.text, class='form-check-input', type='checkbox') }}
+            {{field.label.text}}
+        </label>
+    </div>
+{% elif field.type == 'FileField' %}
+    <div class='{{formclasses}}'>
+        {% if label %} {{field.label}} {% endif %}
+        {{ field(class='form-control-file', label=field.label.text, **kwargs) }}
+    </div>
+{% elif field.type == 'QuerySelectField' or field.type == 'SelectField' %}
+    <div class='{{formclasses}}'>
+        {% if label %} {{ field.label }} {% endif %}
+        {{ field(label=field.label.text, class=classes, **kwargs) }}
+    </div>
+{% elif field.type == 'RadioField' %}
+    <h1>Radio</h1>
+{% elif field.type == 'QuerySelectMultipleField' %}
+    {{ field(class=classes, **kwargs) }}
+{% else %}
+    <div class='{{formclasses}}'>
+        {% if label %} {{ field.label }} {% endif %}
+
+        {{ field(label=field.label.text, class=classes, pattern=pattern, placeholder=placeholder, title=error_msg, readonly=readonly, **kwargs) }}
+
+        <!-- add some feedback if there is an error -->
+        {% if field.errors %}
+            {% for error in field.errors %}
+                <div class='form-control-feedback text-left'>{{error}}</div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endif %}
+{% endmacro %}
+
+{% macro render_form_field(field, pattern = ".*", error_msg = '', classes = '', label = True, title = None, hidden = False) %}
+    {% if hidden %}
+        {% set classes = classes + " hidden" %}
+    {% endif %}
+
+    {% if field.type == 'BooleanField' %}
+        <div class = '{{ classes }}'>
+            <label class = 'mdl-switch mdl-js-switch mdl-js-ripple-effect' for = 'switch-1'>
+                {{ field(class = 'mdl-switch__input', label = field.label.text, id = "switch-1") }}
+                {% if label %}
+                <span class = 'mdl-switch__label'>{{ field.label.text }}</span>
+                {% endif %}
+            </label>
+        </div>
+    {% elif field.type == 'FileField' %}
+        <div class = 'mdl-file mdl-js-file mdl-file--floating-label {{ classes }}'>
+            {{ field() }}
+            {% if label %}
+            <label class = 'mdl-file__label' for = '{{ field.label.text }}'>{{ field.label.text }}</label>
+            {% endif %}
+        </div>
+    {% elif field.type == 'RadioField' %}
+        <p>Not implemented yet</p>
+    {% elif field.type == 'QuerySelectField' or field.type == 'SelectField' %}
+        <div class = 'mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label {{ classes }}'>
+            {{ field(class = 'mdl-selectfield__select', width = '100%') }}
+
+            {% if label %}
+            <label for = "{{ field.label.text.lower() }}" class = 'mdl-selectfield__label'>{{ field.label.text }}</label>
+            {% endif %}
+        </div>
+    {% elif field.type == 'QuerySelectMultipleField' %}
+
+        {{ field( width = '100%') }}
+
+    {% else %}
+        {% if field.errors %}
+        <div class = 'mdl-textfield mdl-js-textfield mdl-textfield--floating-label {{ classes }} has-error'>
+        {% else %}
+        <div class = 'mdl-textfield mdl-js-textfield mdl-textfield--floating-label {{ classes }}'>
+        {% endif %}
+            {{ field(class = 'mdl-textfield__input', label = field.label.text, pattern = pattern, title = title, **kwargs) }}
+
+            {% if label %}
+                <label class = 'mdl-textfield__label' for = '{{ field.label.text }}'>{{ field.label.text }}</label>
+            {% endif %}
+            <span class = 'mdl-textfield__error'>{{ error_msg }}</span>
+        </div>
+    {% endif %}
+
+{% endmacro %}

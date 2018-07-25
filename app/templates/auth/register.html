@@ -1,0 +1,27 @@
+{% extends 'themes/bare-login-theme.html' %}
+{% from 'macros.html' import render_field %}
+
+{% block centered_form %}
+
+<h1 class='card-title' style='margin-bottom:30px;'>REGISTER</h1>
+
+<p>
+	To complete your registration, you will need to verify your email address as provided in the form below. If you do not
+	receive an email from us within a few minutes, please <a href = "mailto:dhagan@mit.edu">contact us</a>.
+</p>
+
+<form action="{{url_for('auth.register')}}" method='post' name='form'>
+	{{ form.hidden_tag() }}
+
+	{{ render_field(form.email, pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}.$", placeholder='email', error_msg='Please enter a valid email') }}
+
+	{{ render_field(form.username, pattern=".{3,}", error_msg="Must be at least 3 characters", placeholder='username') }}
+
+	{{ render_field(form.password, pattern=".{5,}", error_msg='Must be at least 5 characters', placeholder='password') }}
+
+	{{ render_field(form.password2, pattern='.{5,}', error_msg='Must be at least 5 characters', placeholder='verify password') }}
+
+	<button type='submit' class='btn btn-outline-primary btn-block'>REGISTER</button>
+</form>
+
+{% endblock %}

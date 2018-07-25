@@ -1,0 +1,123 @@
+{% extends 'themes/fixed-header-footer-theme.html' %}
+
+{% block content %}
+
+<div class='container with-top-nav' id='docs-holder'>
+    <div class='row'>
+        <div class='col-lg-2 hidden-md-down' id='sidemenu'>
+            <ul class="nav nav-bordered nav-stacked flex-md-column">
+              <li class="nav-header">Overview</li>
+              <li class="nav-item"><a class="nav-link active" href="#api-intro">Introduction</a></li>
+              <li class="nav-item"><a class="nav-link" href="#api-requests">Requests</a></li>
+              <li class="nav-item"><a class="nav-link" href="#api-status-codes">HTTP Statuses</a></li>
+              <li class="nav-item"><a class="nav-link" href="#api-responses">Responses</a></li>
+              <li class="nav-item"><a class="nav-link" href="#api-rate-limit">Rate Limit</a></li>
+              <li class="nav-item"><a class="nav-link" href="#api-keys">API Keys</a></li>
+              <li class="nav-item"><a class="nav-link" href="#api-advanced">Parameters</a></li>
+
+              <li class="nav-header">Endpoints</li>
+
+              <li class="nav-item"><a class="nav-link" href="#endpoint-auth">auth/</a></li>
+              <li class="nav-item"><a class="nav-link" href="#endpoint-devices">device/</a></li>
+              <li class="nav-item"><a class="nav-link" href="#endpoint-device">device/[sn]</a></li>
+              <li class="nav-item"><a class="nav-link" href="#endpoint-data">device/[sn]/data/</a></li>
+              <li class="nav-item"><a class="nav-link" href="#endpoint-latest">device/[sn]/latest/</a></li>
+              <!--<li class="nav-item"><a class="nav-link" href="#endpoint-logs">logs/</a></li>-->
+            </ul>
+        </div>
+        <div class='col-lg-10 offset-lg-2 col-12 api-docs' data-offset=100>
+            <section id='api-intro' class='anchor'>
+                {% filter markdown %}
+                {% include 'main/docs/v1/introduction/intro.md' %}
+                {% endfilter %}
+            </section>
+
+            <section id='api-requests' class='anchor'>
+                {% filter markdown %}
+                {% include 'main/docs/v1/introduction/requests.md' %}
+                {% endfilter %}
+            </section>
+
+            <section id='api-status-codes' class='anchor'>
+                {% filter markdown %}
+                {% include 'main/docs/v1/introduction/status-codes.md' %}
+                {% endfilter %}
+            </section>
+
+            <section id='api-responses' class='anchor'>
+                {% filter markdown %}
+                {% include 'main/docs/v1/introduction/responses.md' %}
+                {% endfilter %}
+            </section>
+
+            <section id='api-rate-limit' class='anchor'>
+                {% filter markdown %}
+                {% include 'main/docs/v1/introduction/rate-limit.md' %}
+                {% endfilter %}
+            </section>
+
+            <section id='api-keys' class='anchor'>
+                {% filter markdown %}
+                {% include 'main/docs/v1/introduction/api-keys.md' %}
+                {% endfilter %}
+            </section>
+
+            <section id='api-advanced' class='anchor'>
+                {% filter markdown %}
+                {% include 'main/docs/v1/introduction/advanced-queries.md' %}
+                {% endfilter %}
+            </section>
+
+
+            <h1>Endpoints</h1>
+
+            <section id='endpoint-auth' class='anchor'>
+                {% filter markdown %}
+                {% include 'main/docs/v1/endpoints/auth.md' %}
+                {% endfilter %}
+            </section>
+
+            <section id='endpoint-devices' class='anchor'>
+                {% filter markdown %}
+                {% include 'main/docs/v1/endpoints/devices.md' %}
+                {% endfilter %}
+            </section>
+
+            <section id='endpoint-device' class='anchor'>
+                {% filter markdown %}
+                {% include 'main/docs/v1/endpoints/device.md' %}
+                {% endfilter %}
+            </section>
+
+            <section id='endpoint-data' class='anchor'>
+                {% filter markdown %}
+                {% include 'main/docs/v1/endpoints/data.md' %}
+                {% endfilter %}
+            </section>
+
+            <section id='endpoint-latest' class='anchor'>
+                {% filter markdown %}
+                {% include 'main/docs/v1/endpoints/latest.md' %}
+                {% endfilter %}
+            </section>
+
+            <!--
+            <section id='endpoint-logs' class='anchor'>
+                {% filter markdown %}
+                {% include 'main/docs/v1/endpoints/logs.md' %}
+                {% endfilter %}
+            </section>
+        -->
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+{% block js_extra %}
+{{super()}}
+<script type='text/javascript'>
+
+</script>
+{% endblock %}

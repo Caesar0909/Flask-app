@@ -1,0 +1,314 @@
+{% extends 'themes/fixed-header-footer-theme.html' %}
+
+{% block content %}
+
+<div class='container' id='map' style='min-height: 100%;'></div>
+<div class='map-overlay top'>
+    <div class='map-overlay-inner'>
+        <fieldset>
+            <label>Showing recent values for </label>
+            <select class='' id='layer' name='layer' onchange="setActiveLayer(this.value)">
+                {% for each in features %}
+                    <option value="{{ each.value }}">{{ each.label }}</option>
+                {% endfor %}
+            </select>
+        </fieldset>
+
+        <fieldset>
+            <p>Total instruments: <span id='device-count'></span></p>
+        </fieldset>
+
+        <fieldset>
+            <h2 style='font-size: 16px; font-weight: bold;'>colorscale</h2>
+            <div class='' id='map-legend'></div>
+        </fieldset>
+
+        <p>Data disclaimer [coming soon...]</p>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block head_extra %}
+    {{ super() }}
+    <script src='https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/chroma-js/1.3.7/chroma.min.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css' rel='stylesheet' />
+{% endblock %}
+
+
+{% block js_extra %}
+{{super()}}
+<script type='text/javascript'>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZGhhZ2FuIiwiYSI6ImNpbzRrMmM0YzAxa3Z2YWtqem9uODNoNDcifQ.hzYoN3WTixS6ZJvhRR939Q';
+
+    // Set the footer padding
+    $('footer').removeClass("mt-4");
+
+    var map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/light-v9',
+        zoom: 6,
+        center: [-156.96, 20.58],
+    });
+
+    // add a control toolbar
+    map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
+
+    // add the popups
+    var popup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: true
+    });
+
+    // add an overlay to allow for users to select the pollutant
+    var colorbar = document.getElementById('colorbar');
+    var pollutants = document.getElementById('layer');
+
+
+    // set the height of the map
+    var setMapHeight = function() {
+        $("#map").css({"padding-top": $("nav").height() + 16});
+
+        // resize the map to fill the parent container
+        map.resize();
+    };
+
+    // set the initial map height
+    setMapHeight();
+
+    $( window ).resize(function(){
+        setMapHeight();
+    });
+
+    var toggleableLayerIds = [];
+
+    // define labels and colors for each breakpoint (must be n=5)
+    // this will move to external js soon
+    var PollutantScale = class {
+        constructor(breakpoints, label, unit) {
+            this.breakpoints = breakpoints;
+            this.n_colors = this.breakpoints.length + 1;
+            this.labeltext = label;
+            this.unit = unit;
+            this.colorscale = chroma.scale("OrRd").colors(this.n_colors);
+        }
+
+        // return labels
+        get labels() {
+            return this.getLabels();
+        }
+
+        get stops(){
+            return this.getStops();
+        }
+
+        getLabels(){
+            var _labels = [];
+            for (var i = 0; i < this.breakpoints.length; i++) {
+                if (i == 0) {
+                    _labels.push("<" + String(this.breakpoints[i]) + " " + this.unit);
+                    _labels.push(String(this.breakpoints[i]) + "-" + String(this.breakpoints[i+1]) + " " +  this.unit)
+                } else if (i == (this.breakpoints.length  - 1)) {
+                    _labels.push(">" + String(this.breakpoints[i]) + " " + this.unit);
+                } else {
+                    _labels.push(String(this.breakpoints[i]) + "-" + String(this.breakpoints[i+1]) + " " + this.unit);
+                }
+            }
+
+            return _labels;
+        }
+
+        getStops(){
+            var _colors = this.colorscale;
+
+            return this.breakpoints.map((e, i) => [e, _colors[i]]);
+        }
+    };
+
+    // define the pollutant scales
+    // https://gka.github.io/chroma.js/#chroma-random
+    var pollutant_scales = [];
+
+    pollutant_scales.push(new PollutantScale(breakpoints=[5, 10, 25, 50, 100], label='so2', unit='ppb'));
+    pollutant_scales.push(new PollutantScale(breakpoints=[10, 20, 30, 40, 50], label='h2s', unit='ppb'));
+    pollutant_scales.push(new PollutantScale(breakpoints=[100, 300, 500, 700, 1000], label='co', unit='ppb'));
+    pollutant_scales.push(new PollutantScale(breakpoints=[5, 10, 25, 50, 100], label='o3', unit='ppb'));
+    pollutant_scales.push(new PollutantScale(breakpoints=[5, 10, 25, 50, 100], label='no', unit='ppb'));
+    pollutant_scales.push(new PollutantScale(breakpoints=[5, 10, 25, 50, 100], label='nox', unit='ppb'));
+    pollutant_scales.push(new PollutantScale(breakpoints=[5, 10, 25, 50, 100], label='pm1', unit='ug/m3'));
+    pollutant_scales.push(new PollutantScale(breakpoints=[5, 10, 25, 50, 100], label='pm25', unit='ug/m3'));
+    pollutant_scales.push(new PollutantScale(breakpoints=[5, 10, 25, 50, 100], label='pm10', unit='ug/m3'));
+
+
+    var get_scale = function( pollutant ){
+        // return the scale (or default if it doesn't exist)
+        var scaleIndex = pollutant_scales.findIndex(x => x.labeltext == pollutant)
+
+        var scale;
+        if (scaleIndex == -1){
+            scale = pollutant_scales[0];
+        } else {
+            scale = pollutant_scales[scaleIndex];
+        }
+
+        return scale;
+    }
+
+    var buildLegend = function( pollutant ){
+        var legend = document.getElementById("map-legend");
+        var deviceCount = document.getElementById('device-count');
+
+        // get values from pollutant_scales
+        var scale = get_scale(pollutant);
+
+        let labels = scale.labels;
+        let colors = scale.colorscale;
+
+        // empty out the div
+        legend.innerHTML = '';
+
+        for (i = 0; i < labels.length; i++) {
+            var label = labels[i];
+            var color = colors[i];
+
+            var item = document.createElement("div");
+            var key = document.createElement("span");
+
+            key.className = 'legend-key';
+            key.style.background = color;
+
+            var value = document.createElement("span");
+            value.innerHTML = label;
+
+            item.appendChild(key);
+            item.appendChild(value);
+            legend.appendChild(item);
+        }
+
+        // number of devices
+        deviceCount.innerHTML = String(map.getLayer(pollutant).metadata.count);
+    };
+
+    var setActiveLayer = function( clickedLayer ) {
+        // set all layers other than layerId to be inactive
+        // make sure popups are closed
+        popup.remove();
+
+        for (var i = 0; i < toggleableLayerIds.length; i++) {
+            if (toggleableLayerIds[i] == clickedLayer) {
+                map.setLayoutProperty(toggleableLayerIds[i], 'visibility', 'visible');
+            } else {
+                map.setLayoutProperty(toggleableLayerIds[i], 'visibility', 'none');
+            }
+        }
+
+        // build the legend
+        buildLegend(clickedLayer);
+    };
+
+
+
+    // Add new layers for each pollutant
+    map.on("load", function(){
+        // add each point to the layer if it has the correct data
+        {% for each in features %}
+
+        var pollutant = "{{ each.value }}";
+
+        toggleableLayerIds.push( pollutant );
+
+        // get the correct scale
+        var scale = get_scale( pollutant );
+
+        // add the layer
+        // https://www.mapbox.com/help/show-changes-over-time/
+        map.addLayer({
+            'id': pollutant,
+            "type": "circle",
+            "source": {
+                "type": "geojson",
+                "data": {
+                    "type": "FeatureCollection",
+                    "features": {{ each.geo_points.features | safe }}
+                }
+            },
+            'paint': {
+                'circle-color': {
+                    property: 'value',
+                    colorSpace: 'lab',
+                    stops: scale.stops,
+                },
+                'circle-radius': 5,
+                'circle-opacity': 0.8,
+                'circle-stroke-color': 'black',
+                'circle-stroke-width': 1,
+                'circle-stroke-opacity': 0.8
+            },
+            'metadata': {
+                'count': {{each.geo_points.features | length }},
+            }
+        });
+
+        {% endfor %}
+
+        // after we've loaded everything...
+        setActiveLayer(toggleableLayerIds[0]);
+
+    });
+
+    // create mouseover events for each layer
+    // https://www.mapbox.com/mapbox-gl-js/example/popup-on-hover/
+    {% for f in features %}
+
+    var pollutant = "{{ f.value }}";
+
+    map.on("mouseenter", pollutant, function(e) {
+        map.getCanvas().style.cursor = 'pointer';
+
+        var coordinates = e.features[0].geometry.coordinates.slice();
+        var value = e.features[0].properties.value;
+        if (isNaN(value)){
+            value = NaN;
+        }
+
+        const loc = {
+            sn: e.features[0].properties.title,
+            url: e.features[0].properties.url,
+            value: value.toFixed(1),
+            unit: e.features[0].properties.unit,
+            location: e.features[0].properties.location,
+            public: e.features[0].properties.public,
+            flag: e.features[0].properties.flag,
+            timestamp: moment.utc(e.features[0].properties.timestamp).fromNow()
+        };
+
+        const markup = `
+            <div class="">
+                <h3>${loc.sn}</h3>
+                <h5>${loc.location}</h5>
+                <p>Last reading: ${loc.flag > 0 ? 'err' : loc.value} ${loc.unit} ${loc.timestamp}</p>
+
+                <a href="${loc.url}" class='btn btn-outline-primary'>View More Data</a>
+            </div>
+        `;
+
+        // ensure the coords are good to go
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+
+        popup.setLngLat(coordinates)
+            .setHTML(markup)
+            .addTo(map);
+    });
+
+    map.on('mouseleave', pollutant, function(){
+        map.getCanvas().style.cursor = '';
+    });
+
+    {% endfor %}
+
+</script>
+{% endblock %}

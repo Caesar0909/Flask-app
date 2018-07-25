@@ -1,0 +1,306 @@
+{% extends 'themes/icon-nav-theme.html' %}
+
+{% block content %}
+<div class='container'>
+    <div class='dashhead'>
+        <div class='dashhead-titles'>
+            <h6 class='dashhead-subtitle'>Dashboards</h6>
+            <h3 class='dashhead-title'>Overview</h3>
+        </div>
+    </div>
+
+    {% include 'main/flash.html' %}
+
+    <ul class='nav nav-bordered mt-4 mt-md-2 mb-0 clearfix' role='tablist'>
+        <li class='nav-item' role='presentation'>
+            <a href='#users' class='nav-link active' role='tab' data-toggle='tab' aria-controls="users">Users</a>
+        </li>
+        <li class='nav-item' role='presentation'>
+            <a href='#devices' class='nav-link' role='tab' data-toggle='tab' aria-controls="devices">Devices</a>
+        </li>
+        <li class='nav-item' role='presentation'>
+            <a href='#groups' class='nav-link' role='tab' data-toggle='tab' aria-controls="groups">Groups</a>
+        </li>
+        <li class='nav-item' role='presentation'>
+            <a href='#models' class='nav-link' role='tab' data-toggle='tab' aria-controls="models">ML Models</a>
+        </li>
+        <li class='nav-item' role='presentation'>
+            <a href='#logs' class='nav-link' role='tab' data-toggle='tab' aria-controls="logs">Logs</a>
+        </li>
+    </ul>
+
+    <hr class='mt-0 mb-5'>
+
+    <div class='tab-content'>
+        <div role='tabpanel' class='tab-pane active' id='users'>
+            <div class='flextable table-actions'>
+                <div class='flextable-item flextable-primary'>
+                    <div class='btn-toolbar-item input-with-icon'>
+                        <input type='text' class='form-control input-block' placeholder='Search Users' id='users'>
+                        <span class='icon icon-magnifying-glass'></span>
+                    </div>
+                </div>
+
+                <div class='flextable-item'>
+                    <div class='btn-group'>
+                        <button type='button' class='btn btn-outline-primary'>
+                            <span class='icon icon-pencil'></span>
+                        </button>
+                        <button type='button' class='btn btn-outline-primary'>
+                            <span class='icon icon-erase'></span>
+                        </button>
+                    </div>
+                </div>
+            </div><!-- end flextable actions -->
+
+            <div class='table-responsive'>
+                <table class='table' data-sort='users-table' id='users'>
+                    <thead>
+                        <tr>
+                            <th><input type='checkbox' class='select-all' id='selectUsers'></th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Last Seen</th>
+                            <th>Confirmed</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td><input type='checkbox' class='select-row'></td>
+                            <td><a href="{{url_for('admin.user', id=user.id)}}">{{user.username}}</a></td>
+                            <td>{{user.email}}</td>
+                            <td>{{user.role}}</td>
+                            <td>{{ moment(user.last_seen).fromNow() }}</td>
+                            <td>{{user.confirmed}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div><!-- end table responsive -->
+
+        </div>
+
+        <div role='tabpanel' class='tab-pane' id='devices'>
+            <div class='flextable table-actions'>
+                <div class='flextable-item flextable-primary'>
+                    <div class='btn-toolbar-item input-with-icon'>
+                        <input type='text' class='form-control input-block' placeholder='Search Devices' id='devices'>
+                        <span class='icon icon-magnifying-glass'></span>
+                    </div>
+                </div>
+
+                <div class='flextable-item'>
+                    <div class='btn-group'>
+                        <button type='button' class='btn btn-outline-primary'>
+                            <span class='icon icon-pencil'></span>
+                        </button>
+                        <button type='button' class='btn btn-outline-primary'>
+                            <span class='icon icon-erase'></span>
+                        </button>
+                        <a href="{{url_for('admin.instrument')}}" class='btn btn-outline-primary'>
+                            <span class='icon icon-plus'></span>
+                        </a>
+                    </div>
+                </div>
+            </div><!-- end flextable actions -->
+
+            <div class='table-responsive'>
+                <table class='table' data-sort='devices-table' id='devices'>
+                    <thead>
+                        <tr>
+                            <th><input type='checkbox' class='select-all' id='selectDevices'></th>
+                            <th>SN</th>
+                            <th>Particle ID</th>
+                            <th>Model</th>
+                            <th>Group</th>
+                            <th>Owner</th>
+                            <th>Location</th>
+                            <th>Last Seen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dev in instrument %}
+                        <tr>
+                            <td><input type='checkbox' class='select-row'></td>
+                            <td><a href="{{url_for('admin.instrument', sn=dev.sn)}}">{{dev.sn}}</a></td>
+                            <td>{{dev.particle_id}}</td>
+                            <td>{{dev.model}}</td>
+                            <td>{{dev.group}}</td>
+                            <td>{{dev.owner.username}}</td>
+                            <td>{{dev.location}}</td>
+                            <td>{{moment(dev.last_updated).fromNow()}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div><!-- end table responsive -->
+
+        </div>
+
+        <div role='tabpanel' class='tab-pane' id='groups'>
+            <ul class='list-group'>
+                <li class='list-group-header'>Groups</li>
+                {% for group in groups %}
+                <li class='list-group-item justify-content-between'>
+                    <a href="#{{group.name}}" data-toggle='collapse' aria-expanded='false' aria-controls="{{group.name}}">{{group.name}}</a>
+                    <span class='badge badge-default badge-pill'>{{group.members.count() }}</span>
+                </li>
+                <div class='collapse' id="{{group.name}}">
+                    <div class='card card-block'>
+                        <div class='card-text'>
+                            {% for member in group.members %}
+                            <button class='btn btn-secondary btn-chip'>{{member.username}}</button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </ul>
+
+        </div>
+
+        <div role='tabpanel' class='tab-pane' id='models'>
+            <div class='flextable table-actions'>
+                <div class='flextable-item flextable-primary'>
+                    <div class='btn-toolbar-item input-with-icon'>
+                        <input type='text' class='form-control input-block' placeholder='Search Models' id='models'>
+                        <span class='icon icon-magnifying-glass'></span>
+                    </div>
+                </div>
+
+                <div class='flextable-item'>
+                    <div class='btn-group'>
+                        <button type='button' class='btn btn-outline-primary'>
+                            <span class='icon icon-erase'></span>
+                        </button>
+                        <a href="{{ url_for('admin.upload_model') }}" class='btn btn-outline-primary'>
+                            <span class='icon icon-plus'></span>
+                        </a>
+                    </div>
+                </div>
+            </div><!-- end flextable actions -->
+
+            <div class='table-responsive'>
+                <table class='table' data-sort='models-table' id='devices'>
+                    <thead>
+                        <tr>
+                            <th><input type='checkbox' class='select-all' id='selectModels'></th>
+                            <th>ID</th>
+                            <th>Label</th>
+                            <th>Filename</th>
+                            <th>Device</th>
+                            <th>RMSE</th>
+                            <th>MAE</th>
+                            <th>R2</th>
+                            <th>Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for m in models %}
+                        <tr>
+                            <td><input type='checkbox' class='select-row'></td>
+                            <td>{{ m.id }}</td>
+                            <td>{{ m.label }}</td>
+                            <td>{{ m.filename }}</td>
+                            <td>{{ m.parent }}</td>
+                            <td>{{ m.rmse }}</td>
+                            <td>{{ m.mae }}</td>
+                            <td>{{ m.r2 }}</td>
+                            <td>{{ moment(m.last_updated).fromNow() }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div><!-- end table responsive -->
+
+        </div>
+
+        <div role='tabpanel' class='tab-pane' id='logs'>
+            <div class='flextable table-actions'>
+                <div class='flextable-item flextable-primary'>
+                    <div class='btn-toolbar-item input-with-icon'>
+                        <input type='text' class='form-control input-block' placeholder='Search Logs' id='logs'>
+                        <span class='icon icon-magnifying-glass'></span>
+                    </div>
+                </div>
+
+                <div class='flextable-item'>
+                    <div class='btn-group'>
+                        <button type='button' class='btn btn-outline-primary'>
+                            <span class='icon icon-erase'></span>
+                        </button>
+                        <a href="{{ url_for('admin.log') }}" class='btn btn-outline-primary'>
+                            <span class='icon icon-plus'></span>
+                        </a>
+                    </div>
+                </div>
+            </div><!-- end flextable actions -->
+
+            <div class='table-responsive'>
+                <table class='table' data-sort='logs-table' id='logs'>
+                    <thead>
+                        <tr>
+                            <th><input type='checkbox' class='select-all' id='selectModels'></th>
+                            <th>ID</th>
+                            <th>Level</th>
+                            <th>Instr</th>
+                            <th>Addressed?</th>
+                            <th>Message</th>
+                            <th>Opened</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td><input type='checkbox' class='select-row'></td>
+                            <td>{{ log.id }}</td>
+                            <td>{{ log.level }}</td>
+                            <td>{{ log.device }}</td>
+                            <td>{{ log.addressed }}</td>
+                            <td>{{ log.message }}</td>
+                            <td>{{ moment(log.opened).fromNow() }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div><!-- end table responsive -->
+
+        </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js_extra %}
+{{ super() }}
+<script>
+    // Make the tables searcheable
+    searchTable('users');
+    searchTable('devices');
+    searchTable('models');
+    searchTable("logs");
+
+$(document).ready(function(){
+    $('[data-sort=users-table]').tablesorter({
+        sortList: [[1,0]]
+    });
+
+    $('[data-sort=devices-table]').tablesorter({
+        sortList: [[1,0]]
+    });
+
+    $('[data-sort=models-table]').tablesorter({
+        sortList: [[1,0]]
+    });
+
+    $('[data-sort=logs-table]').tablesorter({
+        sortList: [[6,1]]
+    });
+});
+
+</script>
+{% endblock %}

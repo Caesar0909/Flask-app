@@ -1,0 +1,37 @@
+{% extends 'themes/icon-nav-theme.html' %}
+{% from 'macros.html' import render_field %}
+
+{% block content %}
+<div class='container'>
+
+    <div class='row justify-content-md-center'>
+        <div class='col-lg-10'>
+            <h1 style='margin-bottom:30px;'>User Settings</h1>
+
+            {% include 'main/flash.html' %}
+
+            <div class='hr-divider'>
+				<h2 class='hr-divider-content hr-divider-heading'>
+					Individual User Settings
+				</h2>
+			</div>
+
+			<form action="" method='post' name='form'>
+				{{ form.hidden_tag() }}
+
+				{{ render_field(form.username, label=True, pattern='.{3,}') }}
+				{{ render_field(form.email, label=True, pattern='.{5,}', error_msg='Must be more than 5 characters') }}
+				{{ render_field(form.role, label=True)}}
+				{{ render_field(form.groups) }}
+				{{ render_field(form.confirmed, label=True) }}
+
+
+				<button type='submit' class='btn btn-outline-primary btn-block'>UPDATE SETTINGS</button>
+
+			</form>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

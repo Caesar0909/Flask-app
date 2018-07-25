@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class='flex-grow centered-card'>
+    <div class='row align-items-center h-100'>
+        <div class='card col-lg-6 col-md-8 col-sm-10 text-center' style='margin: 0 auto;'>
+            <div class='card-block'>
+                {% block centered_form %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

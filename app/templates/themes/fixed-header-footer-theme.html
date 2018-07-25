@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block head_extra %}
+    {{ pagedown.include_pagedown() }}
+{% endblock %}
+
+{% block main %}
+    {% include 'nav/primary-nav.html' %}
+
+    {% block content %}{% endblock %}
+
+    {% include 'nav/footer.html' %}
+{% endblock %}

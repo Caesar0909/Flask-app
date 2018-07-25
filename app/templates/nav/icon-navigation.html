@@ -1,0 +1,45 @@
+<nav class='iconav'>
+    <a class='iconav-brand' href="{{url_for('main.index')}}"><span class='icon icon-leaf iconav-brand-icon'></span></a>
+
+    <div class='iconav-slider'>
+        <ul class='nav nav-pills iconav-nav flex-md-column'>
+            {% if current_user.can_manage %}
+            <li class='nav-item'>
+                <a class='nav-link' href="{{url_for('admin.index')}}" title="Admin" data-toggle='tooltip' data-placement='right' data-container='body'>
+                    <span class='icon icon-home'></span>
+                    <small class='iconav-nav-label hidden-md-up'>Admin</small>
+                </a>
+            </li>
+            {% endif %}
+
+            <li class='nav-item'>
+                <a class='nav-link' href="{{url_for('main.user_portal')}}" title="Devices" data-toggle='tooltip' data-placement='right' data-container='body'>
+                    <span class='icon icon-network'></span>
+                    <small class='iconav-nav-label hidden-md-up'>Devices</small>
+                </a>
+            </li>
+
+            <li class='nav-item'>
+                <a class='nav-link' href="{{url_for('main.map')}}" title="Map" data-toggle='tooltip' data-placement='right' data-container='body'>
+                    <span class='icon icon-globe'></span>
+                    <small class='iconav-nav-label hidden-md-up'>Map</small>
+                </a>
+            </li>
+
+            <li class='nav-item'>
+                <a class='nav-link' href="{{url_for('main.user_api')}}" title="API" data-toggle='tooltip' data-placement='right' data-container='body'>
+                    <span class='icon icon-code'></span>
+                    <small class='iconav-nav-label hidden-md-up'>API Documentation</small>
+                </a>
+            </li>
+
+            <li class='nav-item'>
+                <a class='nav-link' href="{{url_for('main.api_docs')}}" title="Documentation" data-toggle='tooltip' data-placement='right' data-container='body'>
+                    <span class='icon icon-list'></span>
+                    <small class='iconav-nav-label hidden-md-up'>Documentation</small>
+                </a>
+            </li>
+
+        </ul>
+    </div>
+</nav>
