@@ -30,7 +30,7 @@ greenlet==0.4.12
 hybrid==0.1.3
 idna==2.6
 itsdangerous==0.24
-Jinja2==2.10
+Jinja2==2.11.3
 jmespath==0.9.3
 jsmin==2.2.2
 Mako==1.0.7
