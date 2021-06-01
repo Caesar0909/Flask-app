@@ -62,7 +62,7 @@ six==1.11.0
 sklearn==0.0
 SQLAlchemy==1.1.15
 textblob==0.15.0
-urllib3==1.22
+urllib3==1.26.5
 webassets==0.12.1
 Werkzeug==0.12.2
 WTForms==2.1
